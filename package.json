@@ -1,14 +1,12 @@
 {
   "name": "language-parser3",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parser 3 language grammar",
-  "keywords": [
-  ],
+  "keywords": [],
   "repository": "https://github.com/viatsko/language-parser3",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
