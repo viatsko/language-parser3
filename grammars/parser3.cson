@@ -1,0 +1,286 @@
+fileTypes: [
+  "p",
+  "pp",
+  "bp"
+]
+foldingStartMarker: "\\{\\s*$"
+foldingStopMarker: "^\\s*\\}"
+name: "Parser3"
+patterns: [
+  {
+    match: "\\^(if|for|eval|process|while|s(witch|leep)|c(a(se|che)|on(nect|tinue))|t(aint|hrow|ry)|u(ntaint|se)|apply-taint|break)\\b"
+    name: "keyword.operator.parser3"
+  }
+  {
+    match: "\\^#[0-9a-fA-F]{2}"
+    name: "constant.character.parser3"
+  }
+  {
+    begin: "\\^rem\\{"
+    end: "\\}"
+    patterns: [
+      {
+        include: "#rem-insider"
+      }
+    ]
+    name: "comment.block.parser3"
+  }
+  {
+    match: "^#.*"
+    name: "comment.line.parser3"
+  }
+  {
+    match: "(\\^)(\\^|\\$|;|@|\\(|\\)|\\{|\\}|\\[|\\]|:|\"|'|#)"
+    captures:
+      "1":
+        name: "constant.character.escape.parser3"
+  }
+  {
+    match: "\\^[\\w\\-]+::[\\w\\-]*\\b"
+    name: "entity.name.function.constructor.parser3"
+  }
+  {
+    match: "\\$result\\b(?![-_.:])"
+    name: "variable.language.result.parser3"
+  }
+  {
+    match: "^@[\\w\\-]*$"
+    name: "entity.name.function.parser3"
+  }
+  {
+    begin: "^(@[\\w\\-]+)(\\[)"
+    beginCaptures:
+      "1":
+        name: "entity.name.function.definition.parser3"
+      "2":
+        name: "punctuation.section.string.parser3"
+    end: "(\\])?(\\s.*)?$"
+    endCaptures:
+      "1":
+        name: "punctuation.section.string.parser3"
+      "2":
+        name: "comment.line.parser3"
+    name: "meta.function.definition.parser3"
+    patterns: [
+      {
+        include: "#separator"
+      }
+      {
+        match: "\\]\\["
+        name: "punctuation.section.string.parser3"
+      }
+      {
+        match: "\\bresult\\b"
+        name: "variable.parameter.result.parser3"
+      }
+      {
+        match: "\\blocals\\b"
+        name: "variable.parameter.locals.parser3"
+      }
+    ]
+  }
+  {
+    begin: "\\^[\\w\\-]*"
+    end: "(\\b(?![.:])|\\s)"
+    captures:
+      "0":
+        name: "entity.name.function.parser3"
+    name: "meta.function.definition.parser3"
+    patterns: [
+      {
+        begin: "(\\.|:)(\\[)"
+        beginCaptures:
+          "1":
+            name: "entity.name.function.parser3"
+          "2":
+            name: "punctuation.section.string.parser3"
+        end: "\\]"
+        endCaptures:
+          "0":
+            name: "punctuation.section.string.parser3"
+        patterns: [
+          {
+            include: "$self"
+          }
+        ]
+        name: "meta.parameters.parser3"
+      }
+      {
+        match: "(\\.|:)(\\$[\\w\\-]*)"
+        captures:
+          "1":
+            name: "entity.name.function.parser3"
+          "2":
+            name: "variable.other.parser3"
+      }
+      {
+        match: "(\\.|:)[\\w\\-]*"
+        name: "entity.name.function.parser3"
+      }
+    ]
+  }
+  {
+    name: "meta.variable.definition.parser3"
+    begin: "(\\$)(\\{)(\\w+)"
+    beginCaptures:
+      "1":
+        name: "variable.other.parser3"
+      "2":
+        name: "punctuation.section.code.parser3"
+      "3":
+        name: "variable.other.parser3"
+    end: "\\}"
+    endCaptures:
+      "0":
+        name: "punctuation.section.code.parser3"
+    patterns: [
+      {
+        include: "#variable-inline"
+      }
+      {
+        include: "#variable-branch"
+      }
+    ]
+  }
+  {
+    name: "meta.variable.definition.parser3"
+    begin: "\\$\\.?[\\w\\-]*"
+    end: "(\\b(?![.:])|\\B(?![\\w\\-\\$])|\\s)"
+    captures:
+      "0":
+        name: "variable.other.parser3"
+    patterns: [
+      {
+        include: "#variable-inline"
+      }
+      {
+        include: "#variable-branch"
+      }
+    ]
+  }
+  {
+    begin: "\\("
+    end: "(\\)|\\n(?=^@))"
+    captures:
+      "0":
+        name: "punctuation.section.expression.parser3"
+    patterns: [
+      {
+        include: "$self"
+      }
+      {
+        include: "#separator"
+      }
+      {
+        include: "#quoted-string-single"
+      }
+      {
+        include: "#quoted-string-double"
+      }
+      {
+        match: "\\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\\.?[0-9]*)((e|E)(\\+|-)?[0-9]+)?))\\b"
+        name: "constant.numeric.parser3"
+      }
+      {
+        match: "\\b(true|false)\\b"
+        name: "constant.language.parser3"
+      }
+      {
+        match: "\\b(is|def|in|ne|eq|lt|gt|le|ge)\\b"
+        name: "keyword.operator.parser3"
+      }
+      {
+        match: "\\B(-f|-d)\\b"
+        name: "keyword.operator.parser3"
+      }
+      {
+        match: "[-!%&<>*+=/\\\\~|]"
+        name: "keyword.operator.symbolic.parser3"
+      }
+    ]
+    name: "meta.expression.parser3"
+  }
+  {
+    begin: "\\["
+    end: "\\]"
+    captures:
+      "0":
+        name: "punctuation.section.string.parser3"
+    patterns: [
+      {
+        include: "$self"
+      }
+      {
+        include: "#separator"
+      }
+    ]
+    name: "meta.string.parser3"
+  }
+  {
+    begin: "\\{"
+    end: "\\}"
+    captures:
+      "0":
+        name: "punctuation.section.code.parser3"
+    patterns: [
+      {
+        include: "$self"
+      }
+      {
+        include: "#separator"
+      }
+    ]
+    name: "meta.code.parser3"
+  }
+]
+repository:
+  separator:
+    match: ";"
+    name: "punctuation.separator.parser3"
+  "rem-insider":
+    begin: "\\{"
+    end: "\\}"
+    patterns: [
+      {
+        include: "#rem-insider"
+      }
+    ]
+  "quoted-string-single":
+    begin: "'"
+    end: "'"
+    name: "string.quoted.single.parser3"
+    patterns: [
+      {
+        include: "$self"
+      }
+    ]
+  "quoted-string-double":
+    begin: "\""
+    end: "\""
+    name: "string.quoted.double.parser3"
+    patterns: [
+      {
+        include: "$self"
+      }
+    ]
+  "variable-inline":
+    begin: "(\\.|:)(\\[)"
+    beginCaptures:
+      "1":
+        name: "variable.other.parser3"
+      "2":
+        name: "punctuation.section.string.parser3"
+    end: "\\]"
+    endCaptures:
+      "0":
+        name: "punctuation.section.string.parser3"
+    patterns: [
+      {
+        include: "$self"
+      }
+    ]
+    name: "meta.parameters.parser3"
+  "variable-branch":
+    match: "[.:]\\$?[\\w\\-]*"
+    name: "variable.other.parser3"
+scopeName: "source.parser3"
